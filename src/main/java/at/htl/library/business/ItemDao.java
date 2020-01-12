@@ -22,8 +22,15 @@ public class ItemDao {
 
 
     public List<Item> get() {
-        TypedQuery<Item> entities = em.createNamedQuery("Item.findAll",Item.class);
-        return  entities.getResultList();
+        try {
+            TypedQuery<Item> entities = em.createNamedQuery("Item.findAll",Item.class);
+            return  entities.getResultList();
+        }
+        catch (QueryTimeoutException ex){
+            System.out.println("caught expected exception");
+            return null;
+        }
+
     }
 
     public List<Object[]> getStatistics() {
