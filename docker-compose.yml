@@ -1,0 +1,23 @@
+version: "3.5"
+services:
+  database:
+    container_name: librarydatasource
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: passme
+      POSTGRES_USER: library
+      POSTGRES_DB: library
+      PG_DATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - librarypostgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - qpan-net
+volumes:
+  librarypostgres:
+    name: librarydatasource_data
+
+networks:
+  qpan-net:
+    driver: bridge
