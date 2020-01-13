@@ -3,6 +3,7 @@ package at.htl;
 
 import at.htl.library.business.ItemDao;
 import at.htl.library.model.Book;
+import at.htl.library.model.CD;
 import at.htl.library.model.Item;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,6 +18,8 @@ import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -35,12 +38,12 @@ public class MockingTest {
         when(mockedEntityManager.createNamedQuery("Item.findAll",Item.class)).thenReturn(mockedQuery);
         when(mockedItemDao.getBook(anyLong())).thenReturn(predeterminedBook);
         when(mockedItemDao.get()).thenCallRealMethod();
-
+        when(mockedItemDao.getCD(anyLong())).thenThrow(new RuntimeException());
         mockedItemDao.em = mockedEntityManager;
     }
 
 
-    //simulate exception
+
 
     @Test
     public void t01_listItemsGetException(){
@@ -55,4 +58,11 @@ public class MockingTest {
         assertThat(book.getPrice()).isEqualTo(12.0);
     }
     //
+    @Test
+    public void t03_catchException(){
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            mockedItemDao.getCD(1);
+        });
+        assertThat(exception).isNotNull();
+    }
 }
