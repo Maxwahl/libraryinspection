@@ -24,7 +24,6 @@ public class PersonDao {
     public Person get(long id) {
         TypedQuery<Person> entities = em.createNamedQuery("Person.findById",Person.class);
         entities.setParameter("Id",id);
-        System.err.println(entities.toString());
         return  entities.getSingleResult();
     }
     @Transactional
