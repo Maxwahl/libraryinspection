@@ -42,5 +42,7 @@ public class RestAssuredTests {
                 .response()
                 .body().path("id");
         given().delete("/persons/"+postedId).then().statusCode(204);
+        get("/persons").then().statusCode(200).assertThat()
+                .body("size()", is(2));
     }
 }
