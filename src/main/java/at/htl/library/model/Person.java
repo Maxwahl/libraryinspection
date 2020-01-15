@@ -3,6 +3,7 @@ package at.htl.library.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,6 +22,7 @@ public class    Person {
     }
 
     public Person() {
+        loans = new ArrayList<>();
     }
 
     public Long getId() {
@@ -31,21 +33,33 @@ public class    Person {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+
     @JsonIgnore
     public List<Loan> getLoans() {
         return loans;
     }
 
-    public void setLoans(List<Loan> loans) {
-        this.loans = loans;
+    public Person setId(Long id) {
+        Id = id;
+        return this;
     }
 
+    public Person setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Person setLoans(List<Loan> loans) {
+        this.loans = loans;
+        return this;
+    }
 
     @Override
     public String toString() {
-        return getName();
+        return "Person{" +
+                "Id=" + Id +
+                ", name='" + name + '\'' +
+                ", loans=" + loans +
+                '}';
     }
 }
