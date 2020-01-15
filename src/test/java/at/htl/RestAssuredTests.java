@@ -4,11 +4,12 @@ package at.htl;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 public class RestAssuredTests {
@@ -22,10 +23,12 @@ public class RestAssuredTests {
 
     @Test
     public void t01_GetDataTest(){
-        get("/persons").then().statusCode(200).assertThat()
-                .body("size()", is(2))
-                .body("id", containsInAnyOrder(1,2))
-                .body("name",containsInAnyOrder("Meier","Hofer"));
+        JsonPath jsonPath =get("/persons").then().statusCode(200).assertThat().extract().jsonPath();
+
+        assertThat(jsonPath.getList("")).hasSize(2);
+        assertThat(jsonPath.getList("id")).containsExactly(1,2);
+
+
     }
 
     @Test
@@ -39,10 +42,11 @@ public class RestAssuredTests {
                 .then()
                 .statusCode(200)
                 .extract()
-                .response()
-                .body().path("id");
+                .jsonPath()
+                .getInt("id");
         given().delete("/persons/"+postedId).then().statusCode(204);
-        get("/persons").then().statusCode(200).assertThat()
-                .body("size()", is(2));
+        JsonPath jsonPath = get("/persons").then().statusCode(200).assertThat().extract().jsonPath();
+        assertThat(jsonPath.getList("")).hasSize(2);
+
     }
 }
